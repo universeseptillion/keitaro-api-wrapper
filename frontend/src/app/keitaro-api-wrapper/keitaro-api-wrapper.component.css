@@ -1,0 +1,141 @@
+main {
+    max-width: 1000px;
+    margin: 32px auto;
+    padding: 0 20px;
+    font-family: sans-serif;
+}
+
+section {
+    margin-bottom: 24px;
+    padding: 24px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgb(15 23 42 / 4%);
+}
+
+h1 {
+    margin-bottom: 24px;
+    font-size: 28px;
+}
+
+h2 {
+    margin-top: 0;
+}
+
+label {
+    display: block;
+    margin-top: 16px;
+    margin-bottom: 6px;
+}
+
+input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background: #fff;
+    color: inherit;
+}
+
+input:focus-visible {
+    outline: 2px solid #2563eb;
+    outline-offset: 2px;
+}
+
+ul {
+    max-height: 260px;
+    overflow-y: auto;
+    padding: 0;
+    list-style: none;
+}
+
+li {
+    margin-bottom: 6px;
+}
+
+button {
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background: #f8fafc;
+    color: inherit;
+    cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+    background: #e2e8f0;
+}
+
+button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+[role="alert"] {
+    color: #b00020;
+}
+
+.stream {
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #fff;
+}
+
+.stream.dirty {
+    border-color: #facc15;
+    background: #fffbeb;
+}
+
+.removed {
+    color: #888;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+fieldset {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.stream-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.create-campaign-button,
+.fetch-streams-button {
+    border: 1px solid #2563eb;
+    background: #2563eb;
+    color: #fff;
+    font-weight: 700;
+}
+
+.create-campaign-button:hover:not(:disabled),
+.fetch-streams-button:hover:not(:disabled) {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+.create-campaign-button,
+.fetch-streams-button {
+    display: block;
+    margin-top: 12px;
+}

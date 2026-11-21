@@ -1,0 +1,127 @@
+<main>
+    <h1>Keitaro API Wrapper</h1>
+
+    <p *ngIf="loading">Загрузка офферов…</p>
+    <p *ngIf="error" role="alert">{{ error }}</p>
+    <button *ngIf="error" type="button" (click)="loadOffers()">Повторить</button>
+
+    <section>
+        <h2>Новая кампания</h2>
+
+        <label for="campaign-name">Название</label>
+        <input id="campaign-name" [(ngModel)]="campaignName" placeholder="test_фамилия_campaign1" />
+
+        <label for="country">Код страны</label>
+        <input id="country" [(ngModel)]="country" maxlength="2" placeholder="AU" />
+
+        <label for="offer-search">Поиск оффера</label>
+        <input id="offer-search" [(ngModel)]="search" placeholder="Название или ID" [disabled]="loading" />
+
+        <ul>
+            <li *ngFor="let offer of filteredOffers">
+                <button type="button" (click)="selectOffer(offer)">{{ offer.id }} — {{ offer.name }}</button>
+            </li>
+        </ul>
+
+        <p *ngIf="!loading && search.trim() && !filteredOffers.length">Офферы не найдены</p>
+
+        <p *ngIf="selectedOffer">
+            Выбран: {{ selectedOffer.id }} — {{ selectedOffer.name }}
+            <button type="button" (click)="selectedOffer = null">Сбросить</button>
+        </p>
+
+        <button type="button" (click)="createCampaign()" class="create-campaign-button"
+            [disabled]="creating || loading || !selectedOffer || !campaignName.trim() || !country.trim()">
+            {{ creating ? 'Создание…' : 'Создать кампанию' }}
+        </button>
+    </section>
+
+
+
+    <p *ngIf="createError" role="alert">{{ createError }}</p>
+
+    <p *ngIf="createdCampaignId">Кампания создана. ID: {{ createdCampaignId }}</p>
+
+    <section>
+        <h2>Редактор кампании</h2>
+
+        <label for="editor-campaign-id">ID кампании</label>
+
+        <input id="editor-campaign-id" type="number" min="1" step="1" [(ngModel)]="editorCampaignId"
+            [disabled]="fetchingStreams || editingStream" />
+
+        <button type="button" (click)="fetchStreams()" class="fetch-streams-button"
+            [disabled]="fetchingStreams || editingStream || !editorCampaignId">
+            {{ fetchingStreams ? 'Загрузка…' : 'Загрузить потоки' }}
+        </button>
+
+        <p *ngIf="streamsError" role="alert">{{ streamsError }}</p>
+
+        <p *ngIf="streamsLoaded && !streams.length">У кампании нет потоков.</p>
+
+        <article *ngFor="let stream of streams; trackBy: trackStream" class="stream" [class.dirty]="stream.dirty">
+            <h3>{{ stream.name }} — ID {{ stream.id }}</h3>
+
+            <p *ngIf="stream.dirty">Есть неопубликованные изменения.</p>
+
+            <p *ngIf="streamErrors[stream.id]" role="alert">{{ streamErrors[stream.id] }}</p>
+
+            <p *ngIf="!stream.offers.length">Нет офферов.</p>
+
+            <fieldset *ngIf="stream.offers.length" [disabled]="streamBusy[stream.id] || fetchingStreams">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Оффер</th>
+                            <th>Доля</th>
+                            <th>Закрепление</th>
+                            <th>Действие</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr *ngFor="let offer of stream.offers" [class.removed]="offer.removed">
+                            <td>{{ offer.offer_id }} — {{ offer.name }}</td>
+
+                            <td>{{ offer.share }}%</td>
+
+                            <td>
+                                <button *ngIf="!offer.removed" type="button"
+                                    (click)="streamAction(stream, offer.pinned ? 'unpin' : 'pin', offer.offer_id)">
+                                    {{ offer.pinned ? 'Открепить' : 'Закрепить' }}
+                                </button>
+                            </td>
+
+                            <td>
+                                <button type="button"
+                                    (click)="streamAction(stream, offer.removed ? 'restore' : 'remove', offer.offer_id)">
+                                    {{ offer.removed ? 'Восстановить' : 'Удалить' }}
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <label [for]="'stream-search-' + stream.id">Добавить оффер</label>
+
+                <input [id]="'stream-search-' + stream.id" [(ngModel)]="streamSearch[stream.id]"
+                    placeholder="Название или ID" [disabled]="loading" />
+
+                <ul>
+                    <li *ngFor="let offer of findStreamOffers(stream)">
+                        <button type="button" (click)="streamAction(stream, 'add', offer.id)">
+                            Добавить: {{ offer.id }} — {{ offer.name }}
+                        </button>
+                    </li>
+                </ul>
+                <div *ngIf="stream.dirty" class="stream-actions">
+                    <button type="button" (click)="pushStream(stream)">Опубликовать</button>
+
+                    <button type="button" (click)="streamAction(stream, 'cancel')">Отмена</button>
+                </div>
+            </fieldset>
+
+            <p *ngIf="streamBusy[stream.id]">Выполнение операции…</p>
+        </article>
+    </section>
+</main>
